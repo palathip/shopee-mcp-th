@@ -1,3 +1,4 @@
+import { LOCALE } from '../browser/session.js';
 // Shopee reports prices as the real amount × 100000, with no currency symbol
 // and no indication of how many decimals a currency actually uses. Both the
 // search and product tools render prices, so the table lives here rather than
@@ -15,6 +16,7 @@ const CURRENCY_FORMATS: Record<string, CurrencyFormat> = {
   MYR: { symbol: 'RM', locale: 'en-MY', decimals: 2 },
   SGD: { symbol: 'S$', locale: 'en-SG', decimals: 2 },
   TWD: { symbol: 'NT$', locale: 'zh-TW', decimals: 0 },
+  THB: { symbol: '฿', locale: 'th-TH', decimals: 2 },
 };
 
 /** Render a raw Shopee price (real amount × 100000) for display. */
@@ -22,7 +24,7 @@ export function formatPrice(raw: number, currency = 'IDR'): string {
   const amount = raw / 100000;
   const fmt = CURRENCY_FORMATS[currency];
   // Unknown currency: show the code rather than guess at a symbol or precision.
-  if (!fmt) return `${currency} ${amount.toLocaleString('id-ID')}`;
+  if (!fmt) return `${currency} ${amount.toLocaleString(LOCALE)}`;
   return `${fmt.symbol}${amount.toLocaleString(fmt.locale, {
     minimumFractionDigits: fmt.decimals,
     maximumFractionDigits: fmt.decimals,
